@@ -53,25 +53,59 @@ namespace WebSiteExample.Controllers
         }
 
         [HttpPost]
-        public IActionResult Submit(int id)
+        public IActionResult Submit(int id, int quantity)
         {
             Products product = con.ProductsTable.Where(x => x.id == id).FirstOrDefault();
             
             ShoppingCard card = new ShoppingCard();
             card.ProductName = product.ProductName;
-            card.Quantity = 1;
+            card.Quantity = quantity;
             card.UnitPrice = product.UnitPrice;
             card.TotalPrice = card.UnitPrice * card.Quantity;
+            if (quantity != 0)
+            {
+                con.ProductsCard.Add(card);
+                con.SaveChanges();
 
-            con.ProductsCard.Add(card);
+            }
+            else
+            {
+                TempData["submit"] = "Quantity is empty!";
+                
+            }
+            
+
+            return RedirectToAction("Home", "Home");
+        }
+
+        [HttpPost]
+        public IActionResult DeleteProduct(int id) 
+        {
+            ShoppingCard product = con.ProductsCard.Where(x=> x.id == id).FirstOrDefault();
+            con.Remove(product);
             con.SaveChanges();
+
+            return RedirectToAction("Home", "Home");
+        }
+
+        [HttpPost]
+        public IActionResult Payment()
+        {
+            var result = con.ProductsCard.ToList();
+            foreach (var item in result)
+            {
+                con.Remove(item);
+                con.SaveChanges();
+            }
+
+            TempData["payment"] = "Successfully!";
 
             return RedirectToAction("Home", "Home");
         }
 
 
 
-            public IActionResult Privacy()
+        public IActionResult Privacy()
         {
             return View();
         }
