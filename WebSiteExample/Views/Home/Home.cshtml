@@ -1,0 +1,69 @@
+﻿@using WebSiteExample.DataTransferObject
+@model HomeDto;
+@{
+    decimal total = 0;
+    foreach (var item in Model.ProductsCard)
+    {
+        total = total + item.TotalPrice;
+    }
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <h2 class="text-center">Products</h2>
+        <div class="row mt-5">
+            @foreach (var item in Model.ProductsTable)
+            {<form action="/Home/Submit" method="post">
+                    <div class="col-md">
+                        <input hidden="hidden" name="id" value="@item.id" />
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-secondary">
+
+                                <p class="font-weight-bold" style="color:red">@item.ProductName </p>
+                                <p class="font-weight-bold">@item.UnitPrice.ToString("#,##0.00") ₺ </p>
+
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+    <div class="col-md-4">
+        <h3 style="text-align:center">The Shopping Card</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total Price</th>
+                    <th>Process</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ProductsCard)
+                {
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.UnitPrice.ToString("#,##0.00") ₺</td>
+                        <td>@item.TotalPrice.ToString("#,##0.00") ₺</td>
+                        <td>
+                            <button class="btn btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+        <hr />
+        <label class="form-control">
+            Total Price @total.ToString("#,##0.00") ₺
+        </label>
+        <button class="btn btn-success btn-block mt-2">
+            Payment
+        </button>
+    </div>
+
+</div>
